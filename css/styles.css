@@ -30,7 +30,7 @@ body {
 
 input, select, button {
   width:100%;
-  margin:5px 0;
+  margin:5px 5px;
   padding:10px;
   border-radius:8px;
   border:none;
@@ -39,7 +39,6 @@ input, select, button {
 #ip,#cidr,#vslmBase, #hosts {
   font-size:18px;
   font-weight:bold;
-  margin: 5,5,5,5px;
 }
 
 
