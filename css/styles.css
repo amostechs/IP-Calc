@@ -1,0 +1,118 @@
+:root {
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#e2e8f0;
+}
+
+.light {
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#0f172a;
+}
+
+body {
+  margin:0;
+  font-family:Arial;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:20px;
+}
+
+.container {
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  width:420px;
+}
+
+input, select, button {
+  width:100%;
+  margin:5px 0;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+
+button {
+  background:#3b82f6;
+  color:white;
+  cursor:pointer;
+}
+
+.output {
+  margin-top:10px;
+  background:#020617;
+  padding:10px;
+  border-radius:8px;
+  font-size:14px;
+}
+
+.small-btn {
+  margin-top:5px;
+  font-size:12px;
+}:root {
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#e2e8f0;
+}
+
+.light {
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#0f172a;
+}
+
+body {
+  margin:0;
+  font-family:Arial;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:20px;
+}
+
+.container {
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  width:420px;
+}
+
+input, select, button {
+  width:100%;
+  margin:5px 0;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+
+#ip,#cidr,#vslmBase, #hosts {
+  font-size:18px;
+  font-weight:bold;
+  margin-right: 100px;
+}
+
+
+button {
+  background:#3b82f6;
+  color:white;
+  cursor:pointer;
+}
+
+.output {
+  margin-top:10px;
+  background:#020617;
+  padding:10px;
+  border-radius:8px;
+  font-size:14px;
+}
+
+.small-btn {
+  margin-top:5px;
+  font-size:12px;
+}
