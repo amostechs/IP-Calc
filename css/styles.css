@@ -36,12 +36,6 @@ input, select, button {
   border:none;
 }
 
-#ip,#cidr,#vslmBase, #hosts {
-  font-size:18px;
-  font-weight:bold;
-}
-
-
 button {
   background:#3b82f6;
   color:white;
