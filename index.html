@@ -2,168 +2,43 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Subnet Calculator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/styles.css">
+<title>Subnet Toolkit</title>
+<link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-<div class="container">
+<div class="app">
+  <h1>Subnet Toolkit</h1>
 
-<h2>Subnet Calculator</h2>
+  <div class="tabs">
+    <button class="tab active" data-tab="calc">Calculator</button>
+    <button class="tab" data-tab="vlsm">VLSM</button>
+    <button class="tab" data-tab="practice">Practice</button>
+  </div>
 
-<input id="ip" placeholder="IP Address (IPv4 or IPv6)">
-<input id="cidr" placeholder="CIDR (e.g. 24)">
-<select id="maskDropdown">
-<option value="">Or Select Subnet Mask</option>
-<option>255.255.255.0</option>
-<option>255.255.0.0</option>
-<option>255.0.0.0</option>
-</select>
+  <div id="calc" class="tab-content active">
+    <input id="ip" placeholder="IP Address">
+    <input id="cidr" placeholder="CIDR (e.g. 24)">
+    <button id="calcBtn">Calculate</button>
+    <div id="result" class="output"></div>
+  </div>
 
-<button onclick="calculate()">Calculate</button>
-<button onclick="toggleTheme()">Toggle Theme</button>
+  <div id="vlsm" class="tab-content">
+    <input id="vlsmBase" placeholder="192.168.1.0/24">
+    <input id="hosts" placeholder="50,20,10">
+    <button id="vlsmBtn">Calculate VLSM</button>
+    <div id="vlsmResult" class="output"></div>
+  </div>
 
-<div class="output" id="result"></div>
+  <div id="practice" class="tab-content">
+    <button id="quizBtn">Generate Question</button>
+    <div id="quiz"></div>
+  </div>
 
-<button class="small-btn" onclick="copyResult()">Copy Result</button>
-<button class="small-btn" onclick="exportCSV()">Export CSV</button>
-
-<hr>
-
-<h3>VLSM Calculator</h3>
-<input id="vlsmBase" placeholder="Base Network (e.g. 192.168.1.0/24)">
-<input id="hosts" placeholder="Hosts needed (comma separated)">
-<button onclick="calculateVLSM()">Run VLSM</button>
-
-<div class="output" id="vlsmResult"></div>
-
-<hr>
-
-<h3>Practice Mode</h3>
-<button onclick="generateQuiz()">Generate Question</button>
-<div id="quiz"></div>
-
+  <button id="themeToggle">Toggle Theme</button>
 </div>
 
-<script>
-// Validation
-function validIPv4(ip) {
-  return /^(25[0-5]|2[0-4]\d|1?\d\d?)(\.(25[0-5]|2[0-4]\d|1?\d\d?)){3}$/.test(ip);
-}
-
-// IPv4 helpers
-function ipToInt(ip){
-  return ip.split('.').reduce((a,o)=>(a<<8)+ +o,0)>>>0;
-}
-function intToIp(int){
-  return [(int>>>24),(int>>16&255),(int>>8&255),(int&255)].join('.');
-}
-
-// Convert mask to CIDR
-function maskToCIDR(mask){
-  return mask.split('.')
-    .map(x=>parseInt(x).toString(2))
-    .join('')
-    .split('1').length-1;
-}
-
-function calculate(){
-  let ip = document.getElementById("ip").value.trim();
-  let cidr = document.getElementById("cidr").value.trim();
-  let maskInput = document.getElementById("maskDropdown").value;
-
-  if(maskInput){
-    cidr = maskToCIDR(maskInput);
-  }
-
-  const out = document.getElementById("result");
-
-  if(validIPv4(ip)){
-    cidr = parseInt(cidr);
-    let mask = (~0 << (32-cidr))>>>0;
-    let ipInt = ipToInt(ip);
-
-    let net = ipInt & mask;
-    let broad = net | (~mask>>>0);
-
-    let total = 2**(32-cidr);
-    let usable = total>2 ? total-2 : 0;
-
-    out.innerHTML = `
-    Network: ${intToIp(net)}<br>
-    Broadcast: ${intToIp(broad)}<br>
-    Subnet Mask: ${intToIp(mask)}<br>
-    Total Hosts: ${total}<br>
-    Usable Hosts: ${usable}<br>
-    `;
-  } else {
-    // IPv6 basic
-    out.innerHTML = "IPv6 detected. Range calculation simplified.<br>Prefix: /"+cidr;
-  }
-}
-
-// Copy
-function copyResult(){
-  navigator.clipboard.writeText(
-    document.getElementById("result").innerText
-  );
-}
-
-// CSV Export
-function exportCSV(){
-  let text = document.getElementById("result").innerText;
-  let blob = new Blob([text], {type:"text/csv"});
-  let a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "subnet.csv";
-  a.click();
-}
-
-// Theme
-function toggleTheme(){
-  document.body.classList.toggle("light");
-}
-
-// VLSM
-function calculateVLSM(){
-  let base = document.getElementById("vlsmBase").value;
-  let hosts = document.getElementById("hosts").value.split(',').map(x=>parseInt(x.trim())).sort((a,b)=>b-a);
-
-  let [ip,cidr] = base.split('/');
-  let current = ipToInt(ip);
-
-  let output = "";
-
-  hosts.forEach(h=>{
-    let needed = Math.ceil(Math.log2(h+2));
-    let size = 32-needed;
-
-    let mask = (~0 << (32-size))>>>0;
-    let net = current;
-    let broad = net + (2**needed)-1;
-
-    output += `Subnet for ${h} hosts:<br>
-    Network: ${intToIp(net)} /${size}<br>
-    Broadcast: ${intToIp(broad)}<br><br>`;
-
-    current = broad+1;
-  });
-
-  document.getElementById("vlsmResult").innerHTML = output;
-}
-
-// Quiz
-function generateQuiz(){
-  let ip = "192.168."+Math.floor(Math.random()*255)+".0";
-  let cidr = Math.floor(Math.random()*8)+24;
-
-  document.getElementById("quiz").innerHTML =
-    `What is the number of hosts in ${ip}/${cidr}?`;
-}
-
-</script>
-
+<script type="module" src="app.js"></script>
 </body>
 </html>
